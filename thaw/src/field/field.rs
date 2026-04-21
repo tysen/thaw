@@ -1,8 +1,7 @@
 use crate::Label;
 use leptos::{context::Provider, either::EitherOf3, prelude::*};
 use thaw_components::OptionComp;
-use thaw_utils::{class_list, mount_style};
-use uuid::Uuid;
+use thaw_utils::{class_list, mount_style, next_stable_id};
 
 #[component]
 pub fn Field(
@@ -23,7 +22,7 @@ pub fn Field(
     children: Children,
 ) -> impl IntoView {
     mount_style("field", include_str!("./field.css"));
-    let id = StoredValue::new(Uuid::new_v4().to_string());
+    let id = StoredValue::new(next_stable_id());
     let validation_state = RwSignal::new(None::<FieldValidationState>);
 
     view! {

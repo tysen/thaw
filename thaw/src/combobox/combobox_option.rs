@@ -2,7 +2,7 @@ use super::listbox::ListboxInjection;
 use crate::ComboboxInjection;
 use leptos::prelude::*;
 use thaw_components::{Fallback, If, OptionComp, Then};
-use thaw_utils::class_list;
+use thaw_utils::{class_list, next_stable_id};
 
 #[component]
 pub fn ComboboxOption(
@@ -25,7 +25,7 @@ pub fn ComboboxOption(
     let value = StoredValue::new(value.unwrap_or_else(|| text.clone()));
     let text = StoredValue::new(text);
     let is_selected = Memo::new(move |_| value.with_value(|value| combobox.is_selected(&value)));
-    let id = uuid::Uuid::new_v4().to_string();
+    let id = next_stable_id();
 
     let on_click = move |_| {
         if disabled.get_untracked() {

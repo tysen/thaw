@@ -1,7 +1,7 @@
 use super::TagPickerInjection;
 use crate::listbox::ListboxInjection;
 use leptos::{either::Either, ev, prelude::*};
-use thaw_utils::class_list;
+use thaw_utils::{class_list, next_stable_id};
 
 #[component]
 pub fn TagPickerOption(
@@ -22,7 +22,7 @@ pub fn TagPickerOption(
     let value = StoredValue::new(value);
     let text = StoredValue::new(text);
     let is_selected = Memo::new(move |_| value.with_value(|value| tag_picker.is_selected(&value)));
-    let id = uuid::Uuid::new_v4().to_string();
+    let id = next_stable_id();
 
     let on_click = move |e: ev::MouseEvent| {
         if disabled.get_untracked() {

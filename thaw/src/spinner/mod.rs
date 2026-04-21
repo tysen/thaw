@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use thaw_utils::{class_list, mount_style};
+use thaw_utils::{class_list, mount_style, next_stable_id};
 
 #[derive(Default, Clone)]
 pub enum SpinnerSize {
@@ -41,7 +41,7 @@ pub fn Spinner(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     mount_style("spinner", include_str!("./spinner.css"));
-    let id = StoredValue::new(uuid::Uuid::new_v4().to_string());
+    let id = StoredValue::new(next_stable_id());
 
     let spinner_label = label.clone();
     let children_flag = children.is_some();

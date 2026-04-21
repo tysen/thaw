@@ -1,6 +1,6 @@
 use crate::{LocaleConfig, Theme};
 use leptos::{context::Provider, prelude::*};
-use thaw_utils::{class_list, mount_dynamic_style, mount_style};
+use thaw_utils::{class_list, mount_dynamic_style, mount_style, next_stable_id};
 
 #[component]
 pub fn ConfigProvider(
@@ -22,7 +22,7 @@ pub fn ConfigProvider(
     mount_style("config-provider", include_str!("./config-provider.css"));
 
     let theme = theme.unwrap_or_else(|| RwSignal::new(Theme::light()));
-    let theme_id = theme_id.unwrap_or_else(|| uuid::Uuid::new_v4().to_string());
+    let theme_id = theme_id.unwrap_or_else(next_stable_id);
     let id = StoredValue::new(theme_id);
     let locale = locale.unwrap_or_else(|| RwSignal::new(LocaleConfig::default()));
 

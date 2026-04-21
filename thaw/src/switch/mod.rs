@@ -1,7 +1,7 @@
 use crate::{FieldInjection, FieldValidationState, Rule};
 use leptos::{html, prelude::*};
 use std::ops::Deref;
-use thaw_utils::{class_list, mount_style, Model};
+use thaw_utils::{class_list, mount_style, next_stable_id, Model};
 
 #[component]
 pub fn Switch(
@@ -30,7 +30,7 @@ pub fn Switch(
     mount_style("switch", include_str!("./switch.css"));
     let (id, name) = FieldInjection::use_id_and_name(id, name);
     let validate = Rule::validate(rules, checked, name);
-    let id = Signal::derive(move || id.get().unwrap_or_else(|| uuid::Uuid::new_v4().to_string()));
+    let id = Signal::derive(move || id.get().unwrap_or_else(next_stable_id));
     let input_ref = NodeRef::<html::Input>::new();
     let on_change = move |_| {
         let input = input_ref.get_untracked().unwrap();

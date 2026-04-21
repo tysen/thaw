@@ -1,12 +1,6 @@
 .thaw-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
     box-sizing: border-box;
-    max-width: 100%;
-    width: 720px;
-    margin: auto;
     padding:  var(--thaw-card--size);
     row-gap:  var(--thaw-card--size);
     column-gap:  var(--thaw-card--size);

@@ -1,7 +1,7 @@
 use crate::{FieldInjection, FieldValidationState, Rule};
 use leptos::{context::Provider, prelude::*};
 use std::ops::Deref;
-use thaw_utils::{class_list, OptionModel};
+use thaw_utils::{class_list, next_stable_id, OptionModel};
 
 #[component]
 pub fn RadioGroup(
@@ -31,10 +31,7 @@ pub fn RadioGroup(
         }
     });
 
-    let name = Signal::derive(move || {
-        name.get()
-            .unwrap_or_else(|| uuid::Uuid::new_v4().to_string())
-    });
+    let name = Signal::derive(move || name.get().unwrap_or_else(next_stable_id));
 
     view! {
         <Provider value=RadioGroupInjection {

@@ -72,6 +72,18 @@ impl SSRMountStyleContext {
     }
 }
 
+fn inject_styles_into_buf(buf: &mut String, context: SSRMountStyleContext) {
+    if let Some(head_loc) = buf.find("<head>") {
+        let marker_loc = buf
+            .find(r#"<meta name="thaw-ui-style""#)
+            .unwrap_or(head_loc + 6);
+        buf.insert_str(marker_loc, &context.to_html());
+    }
+    // If <head> is not in this buffer (e.g. flushed to a prior stream chunk
+    // by an async boundary such as ErrorBoundary/Suspense), styles will be
+    // injected client-side during hydration instead.
+}
+
 pub struct SSRMountStyle {
     context: SSRMountStyleContext,
     children: AnyView,
@@ -134,14 +146,7 @@ impl RenderHtml for SSRMountStyle {
         self.children
             .to_html_with_buf(buf, position, escape, mark_branches, extra_attrs);
 
-        let head_loc = buf
-            .find("<head>")
-            .expect("you are using SSRMountStyleProvider without a <head> tag");
-        let marker_loc = buf
-            .find(r#"<meta name="thaw-ui-style""#)
-            .unwrap_or(head_loc + 6);
-
-        buf.insert_str(marker_loc, &self.context.to_html());
+        inject_styles_into_buf(buf, self.context);
     }
 
     fn to_html_async_with_buf<const OUT_OF_ORDER: bool>(
@@ -162,14 +167,9 @@ impl RenderHtml for SSRMountStyle {
             extra_attrs,
         );
 
+        let context = self.context;
         buf.with_buf(|buf| {
-            let head_loc = buf
-                .find("<head>")
-                .expect("you are using SSRMountStyleProvider without a <head> tag");
-            let marker_loc = buf
-                .find(r#"<meta name="thaw-ui-style""#)
-                .unwrap_or(head_loc + 6);
-            buf.insert_str(marker_loc, &self.context.to_html());
+            inject_styles_into_buf(buf, context);
         });
     }
 

@@ -4,7 +4,7 @@ pub use radio_group::{RadioGroup, RadioGroupRule, RadioGroupRuleTrigger};
 
 use leptos::prelude::*;
 use radio_group::RadioGroupInjection;
-use thaw_utils::{class_list, mount_style, OptionModelWithValue};
+use thaw_utils::{class_list, mount_style, next_stable_id, OptionModelWithValue};
 
 #[component]
 pub fn Radio(
@@ -18,7 +18,7 @@ pub fn Radio(
 ) -> impl IntoView {
     mount_style("radio", include_str!("./radio.css"));
 
-    let id = uuid::Uuid::new_v4().to_string();
+    let id = next_stable_id();
     let group = RadioGroupInjection::expect_context();
     let item_value = StoredValue::new(value);
 

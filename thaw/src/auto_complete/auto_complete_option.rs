@@ -1,7 +1,7 @@
 use super::AutoCompleteInjection;
 use crate::combobox::listbox::ListboxInjection;
 use leptos::prelude::*;
-use thaw_utils::class_list;
+use thaw_utils::{class_list, next_stable_id};
 
 #[component]
 pub fn AutoCompleteOption(
@@ -17,7 +17,7 @@ pub fn AutoCompleteOption(
         let auto_complete = auto_complete.clone();
         move |_| auto_complete.is_selected(&value)
     });
-    let id = uuid::Uuid::new_v4().to_string();
+    let id = next_stable_id();
     {
         auto_complete.insert_option(id.clone(), value.clone());
         let id = id.clone();

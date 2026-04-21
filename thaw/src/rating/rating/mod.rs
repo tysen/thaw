@@ -5,7 +5,7 @@ pub use types::*;
 use super::rating_item::RatingItem;
 use crate::{FieldInjection, Rule};
 use leptos::{context::Provider, prelude::*};
-use thaw_utils::{class_list, mount_style, OptionModel};
+use thaw_utils::{class_list, mount_style, next_stable_id, OptionModel};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement, MouseEvent};
 
@@ -38,10 +38,7 @@ pub fn Rating(
     let (id, name) = FieldInjection::use_id_and_name(id, name);
     let validate = Rule::validate(rules, value, name);
 
-    let name = Memo::new(move |_| {
-        name.get()
-            .unwrap_or_else(|| uuid::Uuid::new_v4().to_string())
-    });
+    let name = Memo::new(move |_| name.get().unwrap_or_else(next_stable_id));
     let hovered_value = RwSignal::new(None::<f32>);
 
     let on_change = move |e: Event| {
