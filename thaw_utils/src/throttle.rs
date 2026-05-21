@@ -17,7 +17,7 @@ pub fn throttle(cb: impl Fn() + Send + Sync + 'static, duration: Duration) -> im
             return;
         }
         let cb = cb.clone();
-        let handle = set_timeout_with_handle(
+        let handle = set_timeout(
             move || {
                 cb();
                 timeout_handle.update_value(move |handle| {

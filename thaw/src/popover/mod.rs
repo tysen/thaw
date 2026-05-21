@@ -82,7 +82,7 @@ where
             if let Some(handle) = handle.take() {
                 handle.clear();
             }
-            *handle = set_timeout_with_handle(
+            *handle = set_timeout(
                 move || {
                     is_show_popover.set(false);
                 },
