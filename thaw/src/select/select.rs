@@ -31,10 +31,20 @@ pub fn Select(
         let Some(el) = select_ref.get() else {
             return false;
         };
-
         let el_value = el.value();
+
         if !prev.unwrap_or_default() {
-            if let Some(default_value) = default_value.as_ref() {
+            // First run. Resolve initial value:
+            //   1. Model has a value -> sync DOM to it (controlled component).
+            //   2. Else default_value provided -> use that and seed Model.
+            //   3. Else fall back to DOM's choice (typically first option) and
+            //      sync that back to Model so they don't desync.
+            let model_value = value.get_untracked();
+            if !model_value.is_empty() {
+                if model_value != el_value {
+                    el.set_value(&model_value);
+                }
+            } else if let Some(default_value) = default_value.as_ref() {
                 el.set_value(default_value);
                 value.set(default_value.clone());
             } else {
