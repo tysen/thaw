@@ -47,6 +47,10 @@ pub fn Input(
     /// Whether the input is readonly.
     #[prop(optional, into)]
     readonly: Signal<bool>,
+    /// Whether the input is required for form submission. Inherits from the
+    /// surrounding `<Field required=true>` when not set explicitly.
+    #[prop(optional, into)]
+    required: Signal<bool>,
     /// Input size width.
     #[prop(optional, into)]
     input_size: Signal<Option<u32>>,
@@ -67,6 +71,7 @@ pub fn Input(
 ) -> impl IntoView {
     mount_style("input", include_str!("./input.css"));
     let (id, name) = FieldInjection::use_id_and_name(id, name);
+    let required = FieldInjection::use_required(required);
     let validate = Rule::validate(rules, value, name);
 
     let parser_none = parser.is_none();
@@ -182,6 +187,7 @@ pub fn Input(
                 class="thaw-input__input"
                 disabled=disabled
                 readonly=readonly
+                required=required
                 size=input_size
                 placeholder=move || placeholder.get()
                 node_ref=input_ref

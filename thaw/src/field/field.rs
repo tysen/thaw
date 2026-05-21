@@ -62,6 +62,7 @@ pub fn Field(
                 id,
                 name,
                 label,
+                required,
                 validation_state,
             }>{children()}</Provider>
             {move || {
@@ -151,6 +152,7 @@ pub(crate) struct FieldInjection {
     id: StoredValue<String>,
     name: MaybeProp<String>,
     label: MaybeProp<String>,
+    required: Signal<bool>,
     validation_state: RwSignal<Option<FieldValidationState>>,
 }
 
@@ -169,6 +171,21 @@ impl FieldInjection {
 
     pub fn name(&self) -> Option<String> {
         self.name.get()
+    }
+
+    /// Returns the effective `required` state for a field-bound input.
+    /// `true` if either the input's explicit `required` prop is `true`,
+    /// or the surrounding `<Field>` (if any) is marked required.
+    pub fn use_required(required: Signal<bool>) -> Signal<bool> {
+        let field_injection = Self::use_context();
+        Signal::derive(move || {
+            if required.get() {
+                return true;
+            }
+            field_injection
+                .as_ref()
+                .is_some_and(|f| f.required.get())
+        })
     }
 
     pub fn use_id_and_name(
