@@ -119,7 +119,7 @@ impl MessageBarInjection {
     }
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Copy)]
 pub enum MessageBarIntent {
     #[default]
     Info,
