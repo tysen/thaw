@@ -46,7 +46,7 @@ pub fn NavItem(
         let selected = nav_drawer.selected_value.with(|selected_value| {
             value.with(|value| match selected_value {
                 OptionModelWithValue::T(v) => v == value,
-                OptionModelWithValue::Option(v) => v.as_ref() == Some(&value),
+                OptionModelWithValue::Option(v) => v.as_ref() == Some(value),
             })
         });
 
@@ -76,7 +76,7 @@ pub fn NavItem(
                     ("thaw-nav-item--selected", move || selected.get()),
                     class
                 ]
-                href=move || href.get()
+                href=href
                 on:click=on_click
             >
                 {children()}

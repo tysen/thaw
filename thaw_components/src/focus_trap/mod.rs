@@ -14,7 +14,7 @@ pub fn FocusTrap(
     children: Children,
 ) -> impl IntoView {
     #[cfg(any(feature = "csr", feature = "hydrate"))]
-    if disabled == false {
+    if !disabled {
         use leptos::leptos_dom::helpers::WindowListenerHandle;
         let esc_handle = StoredValue::new(None::<WindowListenerHandle>);
         let id = StoredValue::new(uuid::Uuid::new_v4());
@@ -35,10 +35,8 @@ pub fn FocusTrap(
             if is_active && !prev.unwrap_or(false) {
                 let on_esc = on_esc.clone();
                 let handle = window_event_listener(ev::keydown, move |e| {
-                    if &e.code() == "Escape" {
-                        if is_current_active() {
-                            on_esc(e);
-                        }
+                    if &e.code() == "Escape" && is_current_active() {
+                        on_esc(e);
                     }
                 });
                 esc_handle.set_value(Some(handle));

@@ -47,9 +47,7 @@ impl<T, Trigger> Rule<T, Trigger> {
         Trigger: PartialEq + 'static,
     {
         if rules.is_empty() {
-            return Callback::new(move |_trigger: Option<Trigger>| {
-                return true;
-            });
+            return Callback::new(move |_trigger: Option<Trigger>| true);
         }
 
         let field_injection = FieldInjection::use_context();
@@ -122,7 +120,7 @@ impl RuleValueWithUntracked<Option<f32>> for OptionModel<f32> {
         f: impl FnOnce(&Option<f32>) -> Result<(), FieldValidationState>,
     ) -> Result<(), FieldValidationState> {
         self.with_untracked(move |v| match v {
-            OptionModelWithValue::T(v) => f(&Some(v.clone())),
+            OptionModelWithValue::T(v) => f(&Some(*v)),
             OptionModelWithValue::Option(v) => f(v),
         })
     }
@@ -152,7 +150,7 @@ impl RuleValueWithUntracked<Option<NaiveDate>> for OptionModel<NaiveDate> {
         f: impl FnOnce(&Option<NaiveDate>) -> Result<(), FieldValidationState>,
     ) -> Result<(), FieldValidationState> {
         self.with_untracked(move |v| match v {
-            OptionModelWithValue::T(v) => f(&Some(v.clone())),
+            OptionModelWithValue::T(v) => f(&Some(*v)),
             OptionModelWithValue::Option(v) => f(v),
         })
     }
@@ -164,7 +162,7 @@ impl RuleValueWithUntracked<Option<NaiveTime>> for OptionModel<NaiveTime> {
         f: impl FnOnce(&Option<NaiveTime>) -> Result<(), FieldValidationState>,
     ) -> Result<(), FieldValidationState> {
         self.with_untracked(move |v| match v {
-            OptionModelWithValue::T(v) => f(&Some(v.clone())),
+            OptionModelWithValue::T(v) => f(&Some(*v)),
             OptionModelWithValue::Option(v) => f(v),
         })
     }

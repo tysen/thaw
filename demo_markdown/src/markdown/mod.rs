@@ -8,9 +8,9 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 use syn::ItemMacro;
 
-pub fn parse_markdown(
-    md_text: &str,
-) -> Result<(TokenStream, Vec<String>, Vec<(String, String)>), String> {
+pub type ParseMarkdownOk = (TokenStream, Vec<String>, Vec<(String, String)>);
+
+pub fn parse_markdown(md_text: &str) -> Result<ParseMarkdownOk, String> {
     let mut demos: Vec<String> = vec![];
     let mut toc: Vec<(String, String)> = vec![];
 
@@ -18,7 +18,7 @@ pub fn parse_markdown(
     let mut options = comrak::Options::default();
     options.extension.table = true;
 
-    let root = parse_document(&arena, &md_text, &options);
+    let root = parse_document(&arena, md_text, &options);
     let body = iter_nodes(md_text, root, &mut demos, &mut toc);
     Ok((body, demos, toc))
 }
@@ -47,10 +47,12 @@ fn iter_nodes<'a>(
         NodeValue::HtmlBlock(node_html_block) => {
             let html =
                 syn::parse_str::<ItemMacro>(&format!("view! {{ {} }}", node_html_block.literal))
-                    .expect(&format!(
-                        "Cannot be resolved as a macro: \n {}",
-                        node_html_block.literal
-                    ));
+                    .unwrap_or_else(|_| {
+                        panic!(
+                            "Cannot be resolved as a macro: \n {}",
+                            node_html_block.literal
+                        )
+                    });
             quote!(
                 {
                     #html
@@ -64,10 +66,10 @@ fn iter_nodes<'a>(
         ),
         NodeValue::Heading(node_h) => {
             let sourcepos = node.data.borrow().sourcepos;
-            let text = range_text(md_text, sourcepos.start.clone(), sourcepos.end.clone());
+            let text = range_text(md_text, sourcepos.start, sourcepos.end);
             let level = node_h.level as usize + 1;
             let text = text[level..].to_string();
-            let h_id = format!("{}", text.replace(' ', "-").to_ascii_lowercase());
+            let h_id = text.replace(' ', "-").to_ascii_lowercase().to_string();
             toc.push((h_id.clone(), text));
             let h = Ident::new(&format!("h{}", node_h.level), Span::call_site());
             quote!(
@@ -157,7 +159,7 @@ fn iter_nodes<'a>(
         NodeValue::Strikethrough => quote!("Strikethrough todo!!!"),
         NodeValue::Superscript => quote!("Superscript todo!!!"),
         NodeValue::Link(node_link) => {
-            let NodeLink { url, title } = node_link;
+            let NodeLink { url, title } = &**node_link;
 
             quote!(
                 <Link href=#url attr:title=#title>
@@ -174,6 +176,7 @@ fn iter_nodes<'a>(
         NodeValue::Underline => quote!("Underline todo!!!"),
         NodeValue::SpoileredText => quote!("SpoileredText todo!!!"),
         NodeValue::EscapedTag(_) => quote!("EscapedTag todo!!!"),
+        _ => quote!("todo!!!"),
     }
 }
 
@@ -202,7 +205,7 @@ fn range_text(text: &str, start: LineColumn, end: LineColumn) -> &str {
     let mut current_line_num = start_line + 1;
     while current_line_num < end_line {
         let next_line = lines.next().unwrap_or("");
-        start_line_text = &next_line;
+        start_line_text = next_line;
         current_line_num += 1;
     }
 

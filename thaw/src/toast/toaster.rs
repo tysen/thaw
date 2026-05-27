@@ -111,7 +111,7 @@ pub fn Toaster(
                 data-thaw-id=config_provider.id()
             >
                 <div class="thaw-toaster thaw-toaster--top">
-                    <For each=move || top_id_list.get() key=|id| id.clone() let:id>
+                    <For each=move || top_id_list.get() key=|id| *id let:id>
                         {if let Some((view, options, is_show)) = toasts
                             .try_update_value(|map| { map.remove(&id) })
                             .flatten()
@@ -132,7 +132,7 @@ pub fn Toaster(
                     </For>
                 </div>
                 <div class="thaw-toaster thaw-toaster--top-start">
-                    <For each=move || top_start_id_list.get() key=|id| id.clone() let:id>
+                    <For each=move || top_start_id_list.get() key=|id| *id let:id>
                         {if let Some((view, options, is_show)) = toasts
                             .try_update_value(|map| { map.remove(&id) })
                             .flatten()
@@ -153,7 +153,7 @@ pub fn Toaster(
                     </For>
                 </div>
                 <div class="thaw-toaster thaw-toaster--top-end">
-                    <For each=move || top_end_id_list.get() key=|id| id.clone() let:id>
+                    <For each=move || top_end_id_list.get() key=|id| *id let:id>
                         {if let Some((view, options, is_show)) = toasts
                             .try_update_value(|map| { map.remove(&id) })
                             .flatten()
@@ -174,7 +174,7 @@ pub fn Toaster(
                     </For>
                 </div>
                 <div class="thaw-toaster thaw-toaster--bottom">
-                    <For each=move || bottom_id_list.get() key=|id| id.clone() let:id>
+                    <For each=move || bottom_id_list.get() key=|id| *id let:id>
                         {if let Some((view, options, is_show)) = toasts
                             .try_update_value(|map| { map.remove(&id) })
                             .flatten()
@@ -195,7 +195,7 @@ pub fn Toaster(
                     </For>
                 </div>
                 <div class="thaw-toaster thaw-toaster--bottom-start">
-                    <For each=move || bottom_start_id_list.get() key=|id| id.clone() let:id>
+                    <For each=move || bottom_start_id_list.get() key=|id| *id let:id>
                         {if let Some((view, options, is_show)) = toasts
                             .try_update_value(|map| { map.remove(&id) })
                             .flatten()
@@ -216,7 +216,7 @@ pub fn Toaster(
                     </For>
                 </div>
                 <div class="thaw-toaster thaw-toaster--bottom-end">
-                    <For each=move || bottom_end_id_list.get() key=|id| id.clone() let:id>
+                    <For each=move || bottom_end_id_list.get() key=|id| *id let:id>
                         {if let Some((view, options, is_show)) = toasts
                             .try_update_value(|map| { map.remove(&id) })
                             .flatten()
@@ -263,7 +263,7 @@ fn ToasterContainer(
     let intent = intent.unwrap_throw();
 
     if !timeout.is_zero() {
-        set_timeout(
+        let _ = set_timeout(
             move || {
                 is_show.set(false);
             },
@@ -278,7 +278,7 @@ fn ToasterContainer(
         el.style(("max-height", format!("{}px", el.offset_height())));
     };
     let on_after_leave = move |_| {
-        request_animation_frame(move || {
+        let _ = request_animation_frame(move || {
             if let Some(f) = on_close.try_with_value(|f| f.clone()) {
                 f(id, position);
             }

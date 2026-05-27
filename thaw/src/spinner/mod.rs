@@ -43,7 +43,7 @@ pub fn Spinner(
     mount_style("spinner", include_str!("./spinner.css"));
     let id = StoredValue::new(next_stable_id());
 
-    let spinner_label = label.clone();
+    let spinner_label = label;
     let children_flag = children.is_some();
     let labelledby = move || {
         spinner_label.with(|label| {

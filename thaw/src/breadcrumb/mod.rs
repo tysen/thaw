@@ -40,8 +40,8 @@ pub fn BreadcrumbButton(
                 ("thaw-breadcrumb-button--current", move || current.get()),
                 class
             ]
-            aria-disabled=move || current.get().then(|| "true")
-            aria-current=move || current.get().then(|| "page")
+            aria-disabled=move || current.get().then_some("true")
+            aria-current=move || current.get().then_some("page")
         >
             {children()}
         </button>

@@ -56,7 +56,7 @@ pub fn Scrollbar(
     });
     let x_thumb_left = Memo::new(move |_| {
         let x_track_width = f64::from(x_track_width.get());
-        let x_thumb_width = f64::from(x_thumb_width.get());
+        let x_thumb_width = x_thumb_width.get();
         if x_track_width == x_thumb_width {
             is_show_x_thumb.set(false);
             return 0.0;
@@ -89,7 +89,7 @@ pub fn Scrollbar(
     });
     let y_thumb_top = Memo::new(move |_| {
         let y_track_height = f64::from(y_track_height.get());
-        let y_thumb_height = f64::from(y_thumb_height.get());
+        let y_thumb_height = y_thumb_height.get();
         if y_track_height == y_thumb_height {
             is_show_y_thumb.set(false);
             return 0.0;
@@ -317,7 +317,7 @@ pub fn Scrollbar(
                 <div
                     class="thaw-scrollabr__thumb"
                     style:display=move || {
-                        (!is_show_y_thumb.get()).then_some("none").unwrap_or_default()
+                        if !is_show_y_thumb.get() { "none" } else { Default::default() }
                     }
                     style:height=move || format!("{}px", y_thumb_height.get())
                     style:top=move || format!("{}px", y_thumb_top.get())
@@ -328,7 +328,7 @@ pub fn Scrollbar(
                 <div
                     class="thaw-scrollabr__thumb"
                     style:display=move || {
-                        (!is_show_x_thumb.get()).then_some("none").unwrap_or_default()
+                        if !is_show_x_thumb.get() { "none" } else { Default::default() }
                     }
                     style:width=move || format!("{}px", x_thumb_width.get())
                     style:left=move || format!("{}px", x_thumb_left.get())

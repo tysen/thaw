@@ -28,31 +28,29 @@ pub fn AnchorLink(
         })
     });
 
-    if !href.is_empty() {
-        if href.starts_with('#') {
-            let id = href[1..].to_string();
-            href_id.set_value(Some(id.clone()));
-            anchor.append_id(id);
+    if !href.is_empty() && href.starts_with('#') {
+        let id = href[1..].to_string();
+        href_id.set_value(Some(id.clone()));
+        anchor.append_id(id);
 
-            on_cleanup(move || {
-                href_id.with_value(|id| {
-                    if let Some(id) = id {
-                        anchor.remove_id(id);
-                    }
-                });
-            });
-
-            Effect::new(move |_| {
-                let Some(title_el) = title_ref.get() else {
-                    return;
-                };
-
-                if is_active.get() {
-                    let title_rect = title_el.get_bounding_client_rect();
-                    anchor.update_background_position(title_rect);
+        on_cleanup(move || {
+            href_id.with_value(|id| {
+                if let Some(id) = id {
+                    anchor.remove_id(id);
                 }
             });
-        }
+        });
+
+        Effect::new(move |_| {
+            let Some(title_el) = title_ref.get() else {
+                return;
+            };
+
+            if is_active.get() {
+                let title_rect = title_el.get_bounding_client_rect();
+                anchor.update_background_position(title_rect);
+            }
+        });
     }
     let on_click = move |_| {
         href_id.with_value(move |href_id| {
@@ -73,7 +71,7 @@ pub fn AnchorLink(
                 class="thaw-anchor-link__title"
                 on:click=on_click
                 node_ref=title_ref
-                title=move || title.get()
+                title=title
             >
                 {move || title.get()}
             </a>

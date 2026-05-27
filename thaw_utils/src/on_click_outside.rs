@@ -59,7 +59,7 @@ where
                 return;
             };
             let composed_path = ev.composed_path();
-            if els.iter().any(|el| composed_path.includes(&el, 0)) {
+            if els.iter().any(|el| composed_path.includes(el, 0)) {
                 return;
             }
             on_click();

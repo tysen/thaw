@@ -19,27 +19,23 @@ pub fn InteractionTag(
     let disabled = {
         if let Some(disabled) = disabled {
             Some(disabled)
-        } else if let Some(tag_group) = &tag_group {
-            Some(tag_group.disabled.clone())
         } else {
-            None
+            tag_group.as_ref().map(|tag_group| tag_group.disabled)
         }
     };
 
     let size_class = {
         if let Some(size) = size {
             Some(size)
-        } else if let Some(tag_group) = &tag_group {
-            Some(tag_group.size.clone())
         } else {
-            None
+            tag_group.as_ref().map(|tag_group| tag_group.size)
         }
     };
 
     view! {
         <div class=class_list![
             "thaw-interaction-tag",
-            ("thaw-interaction-tag--disabled", move || disabled.map_or(false, |d| d.get())),
+            ("thaw-interaction-tag--disabled", move || disabled.is_some_and(|d| d.get())),
                 size_class.map(|size| move || format!("thaw-interaction-tag--{}", size.get().as_str())),
                 class
         ]>{children()}</div>

@@ -45,9 +45,7 @@ pub fn SwitchVersion() -> impl IntoView {
         let ops: Vec<_> = text
             .split('\n')
             .filter_map(|line| {
-                let Some((v, url)) = line.trim().split_once('=') else {
-                    return None;
-                };
+                let (v, url) = line.trim().split_once('=')?;
 
                 Some((v.trim().to_string(), url.trim().to_string()))
             })

@@ -1,4 +1,4 @@
-use super::super::info_button::InfoButtonSize;
+use super::info_button::InfoButtonSize;
 use crate::{LabelSize, LabelWeight};
 use leptos::{prelude::Children, slot};
 

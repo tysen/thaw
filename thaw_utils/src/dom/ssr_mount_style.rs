@@ -62,11 +62,10 @@ impl SSRMountStyleContext {
         html_len
     }
 
-    fn to_html(self) -> String {
+    fn to_html(&self) -> String {
         let mut styles = self.styles.write_value();
         styles
             .drain()
-            .into_iter()
             .map(|(k, v)| format!(r#"<style id="{k}">{v}</style>"#))
             .collect::<String>()
     }

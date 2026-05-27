@@ -1,15 +1,15 @@
 use leptos::{context::Provider, prelude::*};
 use slotmap::{DefaultKey, SlotMap};
 
+type FieldEntry = (Signal<Option<String>>, Callback<(), bool>);
+
 #[component]
 pub fn FieldContextProvider(children: Children) -> impl IntoView {
     view! { <Provider value=FieldContextInjection::new()>{children()}</Provider> }
 }
 
 #[derive(Clone)]
-pub struct FieldContextInjection(
-    StoredValue<SlotMap<DefaultKey, (Signal<Option<String>>, Callback<(), bool>)>>,
-);
+pub struct FieldContextInjection(StoredValue<SlotMap<DefaultKey, FieldEntry>>);
 
 impl FieldContextInjection {
     fn new() -> Self {
@@ -30,13 +30,12 @@ impl FieldContextInjection {
         validate: impl Fn() -> bool + Send + Sync + 'static,
     ) {
         let mut key = None;
-        let validate: Callback<(), bool> = Callback::from(move || validate());
+        let validate: Callback<(), bool> = Callback::from(validate);
         self.0.update_value(|map| {
             key = Some(map.insert((name, validate)));
-            ()
         });
 
-        let map = self.0.clone();
+        let map = self.0;
         Owner::on_cleanup(move || {
             map.update_value(|map| {
                 map.remove(key.unwrap());

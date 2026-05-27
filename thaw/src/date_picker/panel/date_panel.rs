@@ -154,7 +154,6 @@ pub fn DatePanel(
                             .num_days_from_sunday() as u8;
                         let last_weekday_number = first_weekday_number + 6;
                         (first_weekday_number..=last_weekday_number)
-                            .into_iter()
                             .map(|n| {
                                 view! { <span>{locale.get().ab_day(n % 7)}</span> }
                             })

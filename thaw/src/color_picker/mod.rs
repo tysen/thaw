@@ -39,13 +39,13 @@ pub fn ColorPicker(
             }
             match color {
                 Color::RGB(rgb) => {
-                    let rgb = Srgb::<u8>::from_format(rgb.clone());
+                    let rgb = Srgb::<u8>::from_format(*rgb);
                     let color = format!("rgb({}, {}, {})", rgb.red, rgb.green, rgb.blue);
                     style.push_str(&format!("background-color: {color};"));
                     label.set(color);
                 }
                 Color::HSV(hsv) => {
-                    let rgb: Srgb = hsv.clone().into_color();
+                    let rgb: Srgb = (*hsv).into_color();
                     let rgb = Srgb::<u8>::from_format(rgb);
                     let color = format!("rgb({}, {}, {})", rgb.red, rgb.green, rgb.blue);
                     style.push_str(&format!("background-color: {color};"));
@@ -90,7 +90,7 @@ pub fn ColorPicker(
                 ..
             } = hsv;
             hue.set(h.into_inner());
-            sv.set((s.into(), v.into()))
+            sv.set((s, v))
         } else {
             value.update(|color| {
                 let new_hsv: Hsv = Hsv::new(hue_value, s, v);
@@ -153,7 +153,7 @@ pub fn ColorPicker(
                 on:click=show_popover
                 node_ref=trigger_ref
             >
-                <div class="thaw-color-picker-trigger__content" style=move || style.get()>
+                <div class="thaw-color-picker-trigger__content" style=style>
                     {move || label.get()}
                 </div>
             </div>
@@ -279,7 +279,7 @@ fn HueSlider(hue: RwSignal<f32>) -> impl IntoView {
         <div class="thaw-color-picker-slider" node_ref=rail_ref on:mousedown=on_mouse_down>
             <div
                 class="thaw-color-picker-slider__handle"
-                style=move || format!("left: calc({}% - 6px)", f32::from(hue.get()) / 359.0 * 100.0)
+                style=move || format!("left: calc({}% - 6px)", hue.get() / 359.0 * 100.0)
             ></div>
         </div>
     }

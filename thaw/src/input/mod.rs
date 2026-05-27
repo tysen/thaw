@@ -143,8 +143,8 @@ pub fn Input(
         }
     };
 
-    let prefix_if_ = input_prefix.as_ref().map_or(false, |prefix| prefix.if_);
-    let suffix_if_ = input_suffix.as_ref().map_or(false, |suffix| suffix.if_);
+    let prefix_if_ = input_prefix.as_ref().is_some_and(|prefix| prefix.if_);
+    let suffix_if_ = input_suffix.as_ref().is_some_and(|suffix| suffix.if_);
 
     view! {
         <span
@@ -189,10 +189,10 @@ pub fn Input(
                 readonly=readonly
                 required=required
                 size=input_size
-                placeholder=move || placeholder.get()
+                placeholder=placeholder
                 node_ref=input_ref
                 style=move || input_style.get()
-                autocomplete=move || autocomplete.get()
+                autocomplete=autocomplete
             />
 
             {if let Some(suffix) = input_suffix.and_then(|suffix| suffix.if_.then_some(suffix)) {

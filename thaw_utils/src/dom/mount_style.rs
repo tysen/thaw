@@ -36,7 +36,7 @@ pub fn mount_style(id: &str, content: &'static str) {
             style.set_text_content(Some(content));
 
             let thaw_meta = head
-                .query_selector(&format!(r#"meta[name="thaw-ui-style"]"#))
+                .query_selector(r#"meta[name="thaw-ui-style"]"#)
                 .expect(r#"query meta[name="thaw-ui-style"] element error"#);
 
             if let Some(thaw_meta) = thaw_meta {
@@ -80,7 +80,7 @@ pub fn mount_dynamic_style<T: Fn() -> String + Send + Sync + 'static>(id: String
                     let _ = style.set_attribute("id", &id);
 
                     let thaw_meta = head
-                        .query_selector(&format!(r#"meta[name="thaw-ui-style"]"#))
+                        .query_selector(r#"meta[name="thaw-ui-style"]"#)
                         .expect(r#"query meta[name="thaw-ui-style"] element error"#);
 
                     if let Some(thaw_meta) = thaw_meta {

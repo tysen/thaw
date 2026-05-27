@@ -7,7 +7,7 @@ pub fn Teleport(
     #[prop(into, optional)] mount: Option<web_sys::Element>,
     children: Children,
 ) -> impl IntoView {
-    let mount_fn: Cell<Option<Box<dyn FnOnce() -> ()>>> = Cell::new(Some(Box::new(move || {
+    let mount_fn: Cell<Option<Box<dyn FnOnce()>>> = Cell::new(Some(Box::new(move || {
         let mount = if let Some(el) = mount.as_ref() {
             el
         } else {

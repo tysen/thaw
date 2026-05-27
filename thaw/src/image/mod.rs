@@ -41,10 +41,10 @@ pub fn Image(
                 move || format!("thaw-image--fit-{}", fit.get().as_str()),
                 class
             ]
-            src=move || src.get()
-            alt=move || alt.get()
-            width=move || width.get()
-            height=move || height.get()
+            src=src
+            alt=alt
+            width=width
+            height=height
         />
     }
 }

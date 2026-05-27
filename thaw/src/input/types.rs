@@ -73,7 +73,7 @@ impl InputRef {
     /// Select the input element.
     pub fn select(&self) {
         if let Some(input_el) = self.input_ref.get_untracked() {
-            _ = input_el.select();
+            input_el.select();
         }
     }
 }

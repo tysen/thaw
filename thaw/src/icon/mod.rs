@@ -49,11 +49,11 @@ pub fn Icon(
     view! {
         <svg
             class=class_list!["thaw-icon", class]
-            style=move || style.clone().map(|s| s.get())
+            style=move || style.map(|s| s.get())
             x=icon.x
             y=icon.y
-            width=move || width.get()
-            height=move || height.get()
+            width=width
+            height=height
             viewBox=icon.view_box
             stroke-linecap=icon.stroke_linecap
             stroke-linejoin=icon.stroke_linejoin

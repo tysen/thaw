@@ -1,13 +1,16 @@
 use super::ComboboxRuleTrigger;
 use leptos::prelude::*;
 use std::collections::HashMap;
-use thaw_utils::{Model, VecModel, VecModelWithValue};
+use thaw_utils::{Model, VecModel};
+
+/// (value, text, disabled)
+pub(super) type ComboboxOption = (String, String, Signal<bool>);
 
 #[derive(Clone, Copy)]
 pub(crate) struct ComboboxInjection {
     pub(super) value: Model<String>,
     pub(super) selected_options: VecModel<String>,
-    pub(super) options: StoredValue<HashMap<String, (String, String, Signal<bool>)>>,
+    pub(super) options: StoredValue<HashMap<String, ComboboxOption>>,
     pub(super) is_show_listbox: RwSignal<bool>,
     pub(super) validate: Callback<Option<ComboboxRuleTrigger>, bool>,
     pub multiselect: bool,
@@ -19,7 +22,7 @@ impl ComboboxInjection {
     }
 
     /// value: (value, text, disabled)
-    pub fn insert_option(&self, id: String, value: (String, String, Signal<bool>)) {
+    pub fn insert_option(&self, id: String, value: ComboboxOption) {
         self.options.update_value(|options| {
             options.insert(id, value);
         });
@@ -32,20 +35,10 @@ impl ComboboxInjection {
     }
 
     pub fn is_selected(&self, value: &String) -> bool {
-        self.selected_options.with(|options| match options {
-            VecModelWithValue::T(v) => v == value,
-            VecModelWithValue::Option(v) => {
-                if let Some(v) = v.as_ref() {
-                    v == value
-                } else {
-                    false
-                }
-            }
-            VecModelWithValue::Vec(v) => v.contains(value),
-        })
+        self.selected_options.contains(value)
     }
 
-    pub fn select_option(&self, value: &String, text: &String) {
+    pub fn select_option(&self, value: &String, text: &str) {
         self.selected_options.update(|options| match options {
             (None, None, Some(v)) => {
                 if let Some(index) = v.iter().position(|v| v == value) {
@@ -56,12 +49,12 @@ impl ComboboxInjection {
             }
             (None, Some(v), None) => {
                 *v = Some(value.clone());
-                self.value.set(text.clone());
+                self.value.set(text.to_owned());
                 self.is_show_listbox.set(false);
             }
             (Some(v), None, None) => {
                 *v = value.clone();
-                self.value.set(text.clone());
+                self.value.set(text.to_owned());
                 self.is_show_listbox.set(false);
             }
             _ => unreachable!(),

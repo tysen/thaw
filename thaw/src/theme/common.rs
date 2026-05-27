@@ -70,6 +70,12 @@ pub struct CommonTheme {
     curve_easy_ease_max: String,
 }
 
+impl Default for CommonTheme {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CommonTheme {
     pub fn new() -> Self {
         Self {

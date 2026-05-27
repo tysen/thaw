@@ -63,7 +63,7 @@ pub struct UseBinder {
     pub content_ref: NodeRef<thaw_utils::HtmlElement>,
     pub follower_ref: NodeRef<html::Div>,
     pub placement: RwSignal<FollowerPlacement>,
-    pub sync_position: Arc<dyn Fn() -> () + Send + Sync>,
-    pub ensure_listener: Arc<dyn Fn() -> () + Send>,
-    pub remove_listener: Arc<dyn Fn() -> () + Send>,
+    pub sync_position: Arc<dyn Fn() + Send + Sync>,
+    pub ensure_listener: Arc<dyn Fn() + Send>,
+    pub remove_listener: Arc<dyn Fn() + Send>,
 }

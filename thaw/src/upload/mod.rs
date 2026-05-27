@@ -92,12 +92,12 @@ pub fn Upload(
         ]>
             <input
                 class="thaw-upload__input"
-                id=move || id.get()
-                name=move || name.get()
+                id=id
+                name=name
                 node_ref=input_ref
                 type="file"
-                accept=move || accept.get()
-                multiple=move || multiple.get()
+                accept=accept
+                multiple=multiple
                 on:change=on_change
             />
             <div

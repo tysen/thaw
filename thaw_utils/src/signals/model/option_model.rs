@@ -118,7 +118,7 @@ where
     S: Storage<T> + Storage<Option<T>>,
 {
     fn from(field: Field<T, S>) -> Self {
-        Self::T(field.clone().into(), field.into(), None)
+        Self::T(field.into(), field.into(), None)
     }
 }
 
@@ -132,7 +132,7 @@ where
 {
     fn from(subfield: Subfield<Inner, Prev, T>) -> Self {
         let field: Field<T, S> = subfield.into();
-        Self::T(field.clone().into(), field.into(), None)
+        Self::T(field.into(), field.into(), None)
     }
 }
 
@@ -148,7 +148,7 @@ where
     S: Storage<T> + Storage<Option<T>>,
 {
     fn from(field: Field<Option<T>, S>) -> Self {
-        Self::Option(field.clone().into(), field.into(), None)
+        Self::Option(field.into(), field.into(), None)
     }
 }
 
@@ -162,7 +162,7 @@ where
 {
     fn from(subfield: Subfield<Inner, Prev, Option<T>>) -> Self {
         let field: Field<Option<T>, S> = subfield.into();
-        Self::Option(field.clone().into(), field.into(), None)
+        Self::Option(field.into(), field.into(), None)
     }
 }
 
@@ -181,7 +181,7 @@ where
 {
     fn from((read, write): (Signal<T, S>, SignalSetter<T, S>)) -> Self {
         Self::T(
-            ReadModel::Signal(read.clone()),
+            ReadModel::Signal(read),
             WriteModel::SignalSetter(ReadModel::Signal(read), write),
             None,
         )
@@ -203,7 +203,7 @@ where
 {
     fn from((read, write): (Signal<Option<T>, S>, SignalSetter<Option<T>, S>)) -> Self {
         Self::Option(
-            read.clone().into(),
+            read.into(),
             WriteModel::SignalSetter(ReadModel::Signal(read), write),
             None,
         )

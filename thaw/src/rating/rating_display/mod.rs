@@ -21,7 +21,7 @@ pub fn RatingDisplay(
     #[prop(optional, into)]
     color: Signal<RatingColor>,
 ) -> impl IntoView {
-    mount_style("rating", include_str!("../rating/rating.css"));
+    mount_style("rating", include_str!("../rating.css"));
 
     view! {
         <div
@@ -47,7 +47,6 @@ pub fn RatingDisplay(
                         max = 2;
                     }
                     (0..max)
-                        .into_iter()
                         .map(|i| {
                             view! { <RatingItem value=i + 1 /> }
                         })

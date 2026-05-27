@@ -104,8 +104,8 @@ pub fn Textarea(
                 class="thaw-textarea__textarea"
                 id=id
                 name=name
-                disabled=move || disabled.get()
-                placeholder=move || placeholder.get()
+                disabled=disabled
+                placeholder=placeholder
                 node_ref=textarea_ref
             ></textarea>
         </span>

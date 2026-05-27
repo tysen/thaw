@@ -51,12 +51,12 @@ pub fn Switch(
         <div class=class_list!["thaw-switch", class]>
             <input
                 class="thaw-switch__input"
-                disabled=move || disabled.get()
+                disabled=disabled
                 role="switch"
                 type="checkbox"
                 id=id
                 name=name
-                value=move || value.get()
+                value=value
                 checked=checked.get_untracked()
                 prop:checked=move || { checked.get() }
                 node_ref=input_ref

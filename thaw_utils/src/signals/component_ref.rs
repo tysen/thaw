@@ -19,7 +19,7 @@ where
 
 impl<T, S> Clone for ComponentRef<T, S> {
     fn clone(&self) -> Self {
-        Self(self.0.clone())
+        *self
     }
 }
 

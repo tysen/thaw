@@ -47,7 +47,7 @@ pub fn Radio(
                 disabled=group.disabled
                 name=group.name
                 value=item_value.get_value()
-                prop:checked=move || checked.get()
+                prop:checked=checked
                 on:change=on_change
             />
             <div aria-hidden="true" class="thaw-radio__indicator"></div>

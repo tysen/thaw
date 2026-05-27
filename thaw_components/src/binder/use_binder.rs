@@ -95,7 +95,7 @@ pub fn use_binder(
                 .unwrap_throw();
         });
 
-        if let Some(arrow_el) = arrow_ref.map(|r| r.get_untracked()).flatten() {
+        if let Some(arrow_el) = arrow_ref.and_then(|r| r.get_untracked()) {
             let style = (*arrow_el).style();
             let arrow_safe_width = arrow_safe_width.unwrap();
             let arrow_width = arrow_width.unwrap();
@@ -187,18 +187,14 @@ pub fn use_binder(
         };
 
         let mut handle_vec = vec![];
-        let mut cursor = get_scroll_parent_node(&el);
-        loop {
-            if let Some(node) = cursor.take() {
-                cursor = get_scroll_parent_node(&node);
+        let mut cursor = get_scroll_parent_node(el);
+        while let Some(node) = cursor.take() {
+            cursor = get_scroll_parent_node(&node);
 
-                let handle = add_event_listener(node, ev::scroll, move |_| {
-                    sync_position();
-                });
-                handle_vec.push(handle);
-            } else {
-                break;
-            }
+            let handle = add_event_listener(node, ev::scroll, move |_| {
+                sync_position();
+            });
+            handle_vec.push(handle);
         }
         scrollable_element_handle_vec.set_value(handle_vec);
 

@@ -33,7 +33,7 @@ pub fn ProgressCircle(
 
     let fill_path = rail_path.clone();
     let fill_stroke_dasharray = Memo::new(move |_| {
-        let percentage = value.get().max(0.0).min(100.0);
+        let percentage = value.get().clamp(0.0, 100.0);
 
         format!("{}px {}px", percentage / 100.0 * len, view_box_width * 8)
     });
@@ -50,7 +50,7 @@ pub fn ProgressCircle(
             role="progressbar"
             aria-valuemax="100"
             aria-valuemin="0"
-            aria-valuenow=move || value.get()
+            aria-valuenow=value
             style=("--thaw-size", move || size.get())
         >
 
@@ -74,7 +74,7 @@ pub fn ProgressCircle(
                         stroke-linecap="round"
                         fill="none"
                         style:stroke=fill_stroke_color
-                        style:stroke-dasharray=move || fill_stroke_dasharray.get()
+                        style:stroke-dasharray=fill_stroke_dasharray
                     ></path>
                 </g>
             </svg>

@@ -24,7 +24,7 @@ impl ClassList {
         Default::default()
     }
 
-    #[allow(unused_mut)]
+    #[allow(unused_mut, clippy::should_implement_trait)]
     pub fn add(mut self, value: impl IntoClass) -> Self {
         let class = value.into_class();
         match class {
@@ -201,10 +201,8 @@ impl leptos::tachys::html::class::IntoClass for ClassList {
                     (el, prev_class)
                 }
             } else {
-                if !class.is_empty() {
-                    if !FROM_SERVER {
-                        Rndr::set_attribute(&el, "class", &class);
-                    }
+                if !class.is_empty() && !FROM_SERVER {
+                    Rndr::set_attribute(&el, "class", &class);
                 }
                 (el.clone(), class)
             }
@@ -309,6 +307,18 @@ impl IntoClassValue for Option<String> {
     }
 }
 
+impl IntoClassValue for &'static str {
+    fn into_class_value(self) -> Option<Oco<'static, str>> {
+        Some(self.into())
+    }
+}
+
+impl IntoClassValue for Option<&'static str> {
+    fn into_class_value(self) -> Option<Oco<'static, str>> {
+        self.map(|v| v.into())
+    }
+}
+
 pub trait IntoClass {
     fn into_class(self) -> Class;
 }
@@ -352,7 +362,7 @@ where
 #[cfg(not(feature = "nightly"))]
 impl IntoClass for MaybeProp<String> {
     fn into_class(self) -> Class {
-        Class::FnOptionString(Box::new(move || self.get().map(|c| Oco::from(c))))
+        Class::FnOptionString(Box::new(move || self.get().map(Oco::from)))
     }
 }
 

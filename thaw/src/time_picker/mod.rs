@@ -103,7 +103,7 @@ pub fn TimePicker(
         }
         panel_selected_time.set(value.get_untracked());
         is_show_panel.set(true);
-        request_animation_frame(move || {
+        let _ = request_animation_frame(move || {
             if let Some(panel_ref) = panel_ref.get_untracked() {
                 panel_ref.scroll_into_view();
             }
@@ -224,7 +224,7 @@ fn Panel(
                                     comp_ref.get_untracked().unwrap().scroll_into_view();
                                 };
                                 let is_selected = Memo::new(move |_| {
-                                    selected_time.get().map_or(false, |v| v.hour() == hour)
+                                    selected_time.get().is_some_and(|v| v.hour() == hour)
                                 });
                                 view! {
                                     <PanelTimeItem
@@ -256,7 +256,7 @@ fn Panel(
                                     comp_ref.get_untracked().unwrap().scroll_into_view();
                                 };
                                 let is_selected = Memo::new(move |_| {
-                                    selected_time.get().map_or(false, |v| v.minute() == minute)
+                                    selected_time.get().is_some_and(|v| v.minute() == minute)
                                 });
                                 view! {
                                     <PanelTimeItem
@@ -288,7 +288,7 @@ fn Panel(
                                     comp_ref.get_untracked().unwrap().scroll_into_view();
                                 };
                                 let is_selected = Memo::new(move |_| {
-                                    selected_time.get().map_or(false, |v| v.second() == second)
+                                    selected_time.get().is_some_and(|v| v.second() == second)
                                 });
                                 view! {
                                     <PanelTimeItem

@@ -90,12 +90,8 @@ where
                     if !is_show_menu.get_untracked() {
                         return None;
                     }
-                    let Some(trigger_el) = trigger_ref.get_untracked() else {
-                        return None;
-                    };
-                    let Some(menu_el) = menu_ref.get_untracked() else {
-                        return None;
-                    };
+                    let trigger_el = trigger_ref.get_untracked()?;
+                    let menu_el = menu_ref.get_untracked()?;
                     Some(vec![menu_el.into(), trigger_el])
                 },
                 move || is_show_menu.set(false),

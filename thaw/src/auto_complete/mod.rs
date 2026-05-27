@@ -5,9 +5,9 @@ pub use auto_complete_option::AutoCompleteOption;
 pub use types::*;
 
 use crate::{
+    _aria::use_active_descendant,
     combobox::listbox::{listbox_keyboard_event, Listbox},
     ComponentRef, Input, InputPrefix, InputRef, InputSuffix,
-    _aria::use_active_descendant,
 };
 use leptos::{context::Provider, either::Either, html, prelude::*};
 use std::collections::HashMap;

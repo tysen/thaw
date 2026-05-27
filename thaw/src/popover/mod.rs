@@ -110,12 +110,8 @@ where
                     if !is_show_popover.get_untracked() {
                         return None;
                     }
-                    let Some(trigger_el) = trigger_ref.get_untracked() else {
-                        return None;
-                    };
-                    let Some(popover_el) = popover_ref.get_untracked() else {
-                        return None;
-                    };
+                    let trigger_el = trigger_ref.get_untracked()?;
+                    let popover_el = popover_ref.get_untracked()?;
                     Some(vec![popover_el.into(), trigger_el])
                 },
                 move || is_show_popover.set(false),
@@ -142,7 +138,7 @@ where
     let arrow_style = format!(
         "--thaw-positioning-arrow-height: {}px; --thaw-positioning-arrow-offset: {}px;",
         edge_length,
-        (edge_length / 2.0) * -1.0
+        -(edge_length / 2.0)
     );
     let arrow = FollowerArrow {
         safe_width: 4.0,

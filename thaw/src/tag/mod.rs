@@ -6,6 +6,7 @@ pub use tag_group::*;
 
 use crate::DismissRegularIcon;
 use leptos::{either::Either, ev, prelude::*};
+use thaw_macro::ThemeClass;
 use thaw_utils::{class_list, mount_style, ArcOneCallback};
 
 #[component]
@@ -47,31 +48,15 @@ pub fn Tag(
             )
             .unwrap_or_default();
 
-    let disabled = {
-        if let Some(disabled) = disabled {
-            Some(disabled)
-        } else if let Some(disabled) = group_disabled {
-            Some(disabled)
-        } else {
-            None
-        }
-    };
+    let disabled = disabled.or(group_disabled);
 
-    let size_class = {
-        if let Some(size) = size {
-            Some(size)
-        } else if let Some(group_size) = group_size {
-            Some(group_size)
-        } else {
-            None
-        }
-    };
+    let size_class = size.or(group_size);
 
     view! {
         <span class=class_list![
             "thaw-tag",
                 ("thaw-tag--dismissible", move || group_dismissible.map_or_else(|| dismissible.get(), |d| d.get())),
-                ("thaw-tag--disabled", move || disabled.map_or(false, |d| d.get())),
+                ("thaw-tag--disabled", move || disabled.is_some_and(|d| d.get())),
                 size_class.map(|size| move || format!("thaw-tag--{}", size.get().as_str())),
                 class
         ]>
@@ -84,7 +69,7 @@ pub fn Tag(
                     let group_on_dismiss = group_on_dismiss.clone();
                     let value = value.clone();
                     let on_dismiss = move |event: ev::MouseEvent| {
-                        if disabled.map_or(false, |d| d.get()) {
+                        if disabled.is_some_and(|d| d.get()) {
                             return;
                         }
                         if let Some(on_dismiss) = group_on_dismiss.as_ref() {
@@ -112,20 +97,10 @@ pub fn Tag(
     }
 }
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy, ThemeClass)]
 pub enum TagSize {
     #[default]
     Medium,
     Small,
     ExtraSmall,
-}
-
-impl TagSize {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Medium => "medium",
-            Self::Small => "small",
-            Self::ExtraSmall => "extra-small",
-        }
-    }
 }

@@ -43,7 +43,7 @@ pub fn TagPickerInput(#[prop(optional, into)] class: MaybeProp<String>) -> impl 
 
     view! {
         <input
-            disabled=move || disabled.get()
+            disabled=disabled
             node_ref=input_ref
             type="text"
             role="combobox"

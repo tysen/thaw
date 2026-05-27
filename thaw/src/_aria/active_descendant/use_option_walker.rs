@@ -4,16 +4,17 @@ use std::sync::Arc;
 use wasm_bindgen::{closure::Closure, JsCast, UnwrapThrowExt};
 use web_sys::{HtmlElement, Node, NodeFilter, TreeWalker};
 
-pub fn use_option_walker<MF>(match_option: MF) -> (Box<dyn Fn(&Node) + Send + Sync>, OptionWalker)
+type SetListboxFn = Box<dyn Fn(&Node) + Send + Sync>;
+type WalkerState = (
+    SendWrapper<TreeWalker>,
+    SendWrapper<Closure<dyn Fn(Node) -> u32>>,
+);
+
+pub fn use_option_walker<MF>(match_option: MF) -> (SetListboxFn, OptionWalker)
 where
     MF: Fn(HtmlElement) -> bool + Send + Sync + 'static,
 {
-    let tree_walker = StoredValue::new(
-        None::<(
-            SendWrapper<TreeWalker>,
-            SendWrapper<Closure<dyn Fn(Node) -> u32>>,
-        )>,
-    );
+    let tree_walker = StoredValue::new(None::<WalkerState>);
     let option_walker = OptionWalker(tree_walker);
     let match_option = Arc::new(match_option);
     let set_listbox = move |el: &Node| {
@@ -40,21 +41,12 @@ where
 }
 
 #[derive(Clone)]
-pub struct OptionWalker(
-    StoredValue<
-        Option<(
-            SendWrapper<TreeWalker>,
-            SendWrapper<Closure<dyn Fn(Node) -> u32>>,
-        )>,
-    >,
-);
+pub struct OptionWalker(StoredValue<Option<WalkerState>>);
 
 impl OptionWalker {
     pub fn first(&self) -> Option<HtmlElement> {
         self.0.with_value(|tree_walker| {
-            let Some((tree_walker, _)) = tree_walker.as_ref() else {
-                return None;
-            };
+            let (tree_walker, _) = tree_walker.as_ref()?;
             tree_walker.set_current_node(&tree_walker.root());
             tree_walker.first_child().unwrap_throw()?.dyn_into().ok()
         })
@@ -62,9 +54,7 @@ impl OptionWalker {
 
     pub fn last(&self) -> Option<HtmlElement> {
         self.0.with_value(|tree_walker| {
-            let Some((tree_walker, _)) = tree_walker.as_ref() else {
-                return None;
-            };
+            let (tree_walker, _) = tree_walker.as_ref()?;
             tree_walker.set_current_node(&tree_walker.root());
             tree_walker.last_child().unwrap_throw()?.dyn_into().ok()
         })
@@ -72,27 +62,21 @@ impl OptionWalker {
 
     pub fn next(&self) -> Option<HtmlElement> {
         self.0.with_value(|tree_walker| {
-            let Some((tree_walker, _)) = tree_walker.as_ref() else {
-                return None;
-            };
+            let (tree_walker, _) = tree_walker.as_ref()?;
             tree_walker.next_node().unwrap_throw()?.dyn_into().ok()
         })
     }
 
     pub fn prev(&self) -> Option<HtmlElement> {
         self.0.with_value(|tree_walker| {
-            let Some((tree_walker, _)) = tree_walker.as_ref() else {
-                return None;
-            };
+            let (tree_walker, _) = tree_walker.as_ref()?;
             tree_walker.previous_node().unwrap_throw()?.dyn_into().ok()
         })
     }
 
     pub fn find(&self, predicate: impl Fn(String) -> bool) -> Option<HtmlElement> {
         self.0.with_value(|tree_walker| {
-            let Some((tree_walker, _)) = tree_walker.as_ref() else {
-                return None;
-            };
+            let (tree_walker, _) = tree_walker.as_ref()?;
             tree_walker.set_current_node(&tree_walker.root());
             let mut current: Option<HtmlElement> =
                 tree_walker.first_child().unwrap_throw()?.dyn_into().ok();

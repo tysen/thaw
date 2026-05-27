@@ -42,7 +42,7 @@ pub fn BackTop(
             return;
         };
 
-        request_animation_frame(move || {
+        let _ = request_animation_frame(move || {
             let scroll_el = get_scroll_parent_element(&placeholder_el)
                 .unwrap_or_else(|| document().document_element().unwrap());
 

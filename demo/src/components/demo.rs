@@ -24,7 +24,7 @@ pub fn Demo(
                 css_vars.push_str("--demo-border-color: #383f52;");
                 css_vars.push_str("--demo-background-color: #242832;");
             } else {
-                css_vars.push_str(&format!("--demo-border-color: var(--colorNeutralStroke2);",));
+                css_vars.push_str("--demo-border-color: var(--colorNeutralStroke2);");
                 css_vars.push_str("--demo-background-color: #f9fafb;");
             }
         });
@@ -84,7 +84,7 @@ pub fn Demo(
                             <Button
                                 icon=MaybeProp::derive(move || {
                                     if is_show_code.get() {
-                                        Some(icondata::LuCode2)
+                                        Some(icondata::LuSquareCode)
                                     } else {
                                         Some(icondata::LuCode)
                                     }
@@ -104,7 +104,7 @@ pub fn Demo(
                 <div
                     class=move || code_class.get()
                     style:display=move || {
-                        (!is_show_code.get()).then_some("none").unwrap_or_default()
+                        if !is_show_code.get() { "none" } else { Default::default() }
                     }
                 >
                     {if is_highlight {

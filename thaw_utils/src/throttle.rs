@@ -1,7 +1,7 @@
 use leptos::{leptos_dom::helpers::TimeoutHandle, prelude::*};
 use std::{sync::Arc, time::Duration};
 
-pub fn throttle(cb: impl Fn() + Send + Sync + 'static, duration: Duration) -> impl Fn() -> () {
+pub fn throttle(cb: impl Fn() + Send + Sync + 'static, duration: Duration) -> impl Fn() {
     let cb = Arc::new(cb);
     let timeout_handle = StoredValue::new(None::<TimeoutHandle>);
     on_cleanup(move || {

@@ -158,7 +158,7 @@ impl AnchorInjection {
         }
     }
 
-    pub fn scroll_into_view(&self, id: &String) {
+    pub fn scroll_into_view(&self, id: &str) {
         let Some(link_el) = document().get_element_by_id(id) else {
             return;
         };

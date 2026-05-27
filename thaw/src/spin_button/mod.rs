@@ -116,8 +116,8 @@ where
                 role="spinbutton"
                 aria-valuenow=move || value.get().to_string()
                 type="text"
-                disabled=move || disabled.get()
-                placeholder=move || placeholder.get()
+                disabled=disabled
+                placeholder=placeholder
                 value=initialization_value
                 size=input_size
                 prop:value=move || {
@@ -142,7 +142,7 @@ where
                     "thaw-spin-button__increment-button--disabled",
                     move || increment_disabled.get(),
                 )
-                disabled=move || disabled.get()
+                disabled=disabled
                 on:click=move |_| {
                     if !increment_disabled.get_untracked() {
                         update_value(value.get_untracked() + step_page.get_untracked());
@@ -167,7 +167,7 @@ where
                 aria-label="Decrement value"
                 type="button"
                 class="thaw-spin-button__decrement-button"
-                disabled=move || disabled.get()
+                disabled=disabled
                 class=(
                     "thaw-spin-button__decrement-button--disabled",
                     move || decrement_disabled.get(),

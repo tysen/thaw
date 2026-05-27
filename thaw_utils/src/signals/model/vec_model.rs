@@ -53,11 +53,33 @@ impl<T: Send + Sync> VecModel<T> {
     }
 
     pub fn is_vec(&self) -> bool {
-        if let VecModel::Vec(_, _, _) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, VecModel::Vec(_, _, _))
+    }
+
+    /// Whether the current selection is empty: the single value equals its
+    /// default, the optional value is `None`, or the vec is empty. Reactive.
+    pub fn is_empty(&self) -> bool
+    where
+        T: PartialEq + Default,
+    {
+        self.with(|value| match value {
+            VecModelWithValue::T(v) => *v == T::default(),
+            VecModelWithValue::Option(v) => v.is_none(),
+            VecModelWithValue::Vec(v) => v.is_empty(),
+        })
+    }
+
+    /// Whether `value` is currently selected, across the single/optional/vec
+    /// representations. Reactive.
+    pub fn contains(&self, value: &T) -> bool
+    where
+        T: PartialEq,
+    {
+        self.with(|current| match current {
+            VecModelWithValue::T(v) => *v == *value,
+            VecModelWithValue::Option(v) => v.as_ref() == Some(value),
+            VecModelWithValue::Vec(v) => v.contains(value),
+        })
     }
 
     pub fn with<O>(&self, fun: impl FnOnce(VecModelWithValue<T>) -> O) -> O {
@@ -185,7 +207,7 @@ where
     S: Storage<T> + Storage<Option<T>> + Storage<Vec<T>>,
 {
     fn from(field: Field<T, S>) -> Self {
-        Self::T(field.clone().into(), field.into(), None)
+        Self::T(field.into(), field.into(), None)
     }
 }
 
@@ -199,7 +221,7 @@ where
 {
     fn from(subfield: Subfield<Inner, Prev, T>) -> Self {
         let field: Field<T, S> = subfield.into();
-        Self::T(field.clone().into(), field.into(), None)
+        Self::T(field.into(), field.into(), None)
     }
 }
 
@@ -215,7 +237,7 @@ where
     S: Storage<T> + Storage<Option<T>> + Storage<Vec<T>>,
 {
     fn from(field: Field<Option<T>, S>) -> Self {
-        Self::Option(field.clone().into(), field.into(), None)
+        Self::Option(field.into(), field.into(), None)
     }
 }
 
@@ -229,7 +251,7 @@ where
 {
     fn from(subfield: Subfield<Inner, Prev, Option<T>>) -> Self {
         let field: Field<Option<T>, S> = subfield.into();
-        Self::Option(field.clone().into(), field.into(), None)
+        Self::Option(field.into(), field.into(), None)
     }
 }
 
@@ -245,7 +267,7 @@ where
     S: Storage<T> + Storage<Option<T>> + Storage<Vec<T>>,
 {
     fn from(field: Field<Vec<T>, S>) -> Self {
-        Self::Vec(field.clone().into(), field.into(), None)
+        Self::Vec(field.into(), field.into(), None)
     }
 }
 
@@ -259,7 +281,7 @@ where
 {
     fn from(subfield: Subfield<Inner, Prev, Vec<T>>) -> Self {
         let field: Field<Vec<T>, S> = subfield.into();
-        Self::Vec(field.clone().into(), field.into(), None)
+        Self::Vec(field.into(), field.into(), None)
     }
 }
 
@@ -277,11 +299,7 @@ where
     S: Storage<T> + Storage<Option<T>> + Storage<Vec<T>>,
 {
     fn from((read, write): (Signal<T, S>, SignalSetter<T, S>)) -> Self {
-        Self::T(
-            read.clone().into(),
-            (ReadModel::Signal(read), write).into(),
-            None,
-        )
+        Self::T(read.into(), (ReadModel::Signal(read), write).into(), None)
     }
 }
 
@@ -299,11 +317,7 @@ where
     S: Storage<T> + Storage<Option<T>> + Storage<Vec<T>>,
 {
     fn from((read, write): (Signal<Option<T>, S>, SignalSetter<Option<T>, S>)) -> Self {
-        Self::Option(
-            read.clone().into(),
-            (ReadModel::Signal(read), write).into(),
-            None,
-        )
+        Self::Option(read.into(), (ReadModel::Signal(read), write).into(), None)
     }
 }
 
@@ -321,11 +335,7 @@ where
     S: Storage<T> + Storage<Option<T>> + Storage<Vec<T>>,
 {
     fn from((read, write): (Signal<Vec<T>, S>, SignalSetter<Vec<T>, S>)) -> Self {
-        Self::Vec(
-            read.clone().into(),
-            (ReadModel::Signal(read), write).into(),
-            None,
-        )
+        Self::Vec(read.into(), (ReadModel::Signal(read), write).into(), None)
     }
 }
 

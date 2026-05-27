@@ -191,7 +191,7 @@ pub fn SiteHeader() -> impl IntoView {
                                     "https://discord.gg/uMGvWBDV",
                                 );
                         }
-                        HeaderAction::Navigate(value) => navigate_signal.get()(&value, Default::default()),
+                        HeaderAction::Navigate(value) => navigate_signal.get()(value, Default::default()),
                     }
                 >
                     <MenuTrigger slot>
@@ -261,9 +261,7 @@ pub fn SiteHeader() -> impl IntoView {
                         });
                     }>
                         {move || {
-                            let Some(dir) = dir else {
-                                return None;
-                            };
+                            let dir = dir?;
                             match dir.get() {
                                 ConfigDirection::Auto => Some("Auto"),
                                 ConfigDirection::Ltr => Some("LTR"),

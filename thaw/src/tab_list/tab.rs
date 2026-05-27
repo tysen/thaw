@@ -52,7 +52,7 @@ pub fn Tab(
                     style.set_property("--thaw-tab__indicator--offset", &format!("{offset:.0}px"));
                 let _ = style.set_property("--thaw-tab__indicator--scale", &format!("{scale:.2}"));
 
-                request_animation_frame(move || {
+                let _ = request_animation_frame(move || {
                     let _ = style.set_property("--thaw-tab__indicator--offset", "0px");
                     let _ = style.set_property("--thaw-tab__indicator--scale", "1");
                 });

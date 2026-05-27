@@ -3,6 +3,9 @@ use leptos::{html, prelude::*};
 use std::collections::HashMap;
 use thaw_utils::{BoxCallback, Model};
 
+/// (value, text, disabled)
+pub(super) type TagPickerOption = (String, String, Signal<bool>);
+
 #[slot]
 pub struct TagPickerControl {
     children: Children,
@@ -23,7 +26,7 @@ pub(crate) struct TagPickerInjection {
     pub size: Signal<TagPickerSize>,
     pub input_ref: NodeRef<html::Input>,
     pub(super) selected_options: Model<Vec<String>>,
-    pub options: StoredValue<HashMap<String, (String, String, Signal<bool>)>>,
+    pub options: StoredValue<HashMap<String, TagPickerOption>>,
     pub(super) is_show_listbox: RwSignal<bool>,
     pub(super) listbox_hidden_callback: StoredValue<Vec<BoxCallback>>,
 }
@@ -34,7 +37,7 @@ impl TagPickerInjection {
     }
 
     /// value: (value, text, disabled)
-    pub fn insert_option(&self, id: String, value: (String, String, Signal<bool>)) {
+    pub fn insert_option(&self, id: String, value: TagPickerOption) {
         self.options.update_value(|options| {
             options.insert(id, value);
         });

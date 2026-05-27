@@ -45,14 +45,10 @@ pub fn Avatar(
 
     let image_hidden = RwSignal::new(false);
     let is_show_default_icon = Memo::new(move |_| {
-        if name.with(|n| n.is_some()) {
-            false
-        } else if src.with(|s| s.is_some()) && !image_hidden.get() {
-            false
-        } else if initials.with(|i| i.is_some()) {
+        if name.with(|n| n.is_some()) || (src.with(|s| s.is_some()) && !image_hidden.get()) {
             false
         } else {
-            true
+            !initials.with(|i| i.is_some())
         }
     });
 
@@ -78,9 +74,9 @@ pub fn Avatar(
                 move || format!("thaw-avatar--{}", shape.get().as_str()),
                 class
             ]
-            style=move || style()
+            style=style
             role="img"
-            aria-label=move || name.get()
+            aria-label=name
         >
             {move || {
                 let mut initials = initials.get();
@@ -103,7 +99,7 @@ pub fn Avatar(
                             class="thaw-avatar__image"
                             role="presentation"
                             aria-hidden="true"
-                            hidden=move || image_hidden.get()
+                            hidden=image_hidden
                             on:load=on_load
                             on:error=on_error
                         />

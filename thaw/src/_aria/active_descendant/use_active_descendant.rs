@@ -90,11 +90,7 @@ impl ActiveDescendantController {
 
     pub fn active(&self) -> Option<HtmlElement> {
         let active = self.active.borrow();
-        if let Some(active) = active.as_ref() {
-            Some(active.clone())
-        } else {
-            None
-        }
+        active.as_ref().map(|active| active.clone())
     }
 
     pub fn find(&self, predicate: impl Fn(String) -> bool) -> Option<String> {

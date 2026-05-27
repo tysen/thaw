@@ -21,7 +21,7 @@ pub fn TagPickerOption(
     let listbox = ListboxInjection::expect_context();
     let value = StoredValue::new(value);
     let text = StoredValue::new(text);
-    let is_selected = Memo::new(move |_| value.with_value(|value| tag_picker.is_selected(&value)));
+    let is_selected = Memo::new(move |_| value.with_value(|value| tag_picker.is_selected(value)));
     let id = next_stable_id();
 
     let on_click = move |e: ev::MouseEvent| {
@@ -45,8 +45,8 @@ pub fn TagPickerOption(
     view! {
         <div
             role="option"
-            aria-disabled=move || if disabled.get() { "true" } else { "" }
-            aria-selected=move || is_selected.get().to_string()
+            aria-disabled=move || if disabled.get() { "true" } else { "false" }
+            aria-selected=move || if is_selected.get() { "true" } else { "false" }
             id=id
             class=class_list![
                 "thaw-tag-picker-option",
