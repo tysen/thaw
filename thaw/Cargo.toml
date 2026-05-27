@@ -22,7 +22,7 @@ leptos = { workspace = true }
 thaw_components = { workspace = true }
 thaw_macro = { workspace = true }
 thaw_utils = { workspace = true }
-leptos_transition_group = { version = "0.2.0" }
+leptos_transition_group = { git = "https://github.com/tysen/leptos-transition-group", branch = "leptos_0.9" }
 web-sys = { version = "0.3.72", features = [
     "DomRect",
     "File",
@@ -35,7 +35,7 @@ web-sys = { version = "0.3.72", features = [
 ] }
 wasm-bindgen = { workspace = true }
 icondata_core = "0.1.0"
-icondata_ai = "0.0.10"
+icondata_ai = "0.1.0"
 uuid = { version = "1.10.0", features = ["v4", "js"] }
 cfg-if = "1.0.0"
 chrono = "0.4.38"

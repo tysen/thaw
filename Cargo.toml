@@ -7,8 +7,20 @@ members = [
     "thaw_utils",
     "demo",
     "demo_markdown",
+    "examples/island",
+    "examples/ssr_axum",
 ]
-exclude = ["examples"]
+# Examples are SSR/hydrate apps with mutually-exclusive leptos features; keep them
+# out of routine `cargo build`/`check` so feature unification doesn't enable
+# conflicting csr/ssr/hydrate on thaw. Build them explicitly (`-p island` / cargo-leptos).
+default-members = [
+    "thaw",
+    "thaw_components",
+    "thaw_macro",
+    "thaw_utils",
+    "demo",
+    "demo_markdown",
+]
 
 [workspace.package]
 rust-version = "1.79"
@@ -19,19 +31,27 @@ thaw_components = { version = "0.4.0-beta", path = "./thaw_components" }
 thaw_macro = { version = "0.1.0", path = "./thaw_macro" }
 thaw_utils = { version = "0.2.0-beta", path = "./thaw_utils" }
 
-# leptos
-leptos = { version = "0.9.0-alpha" }
-leptos_meta = { version = "0.9.0-alpha" }
-leptos_router = { version = "0.9.0-alpha" }
-reactive_stores = { version = "0.5.0-alpha" }
+# leptos — direct git deps on the pre-release 0.9 branch (no [patch] indirection)
+leptos = { git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.9" }
+leptos_meta = { git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.9" }
+leptos_router = { git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.9" }
+reactive_stores = { git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.9" }
 
 # web
 wasm-bindgen = { version = "0.2.121" }
 
-[patch.crates-io]
-leptos = { git = "https://github.com/tysen/leptos", branch = "leptos_0.9" }
-leptos_meta = { git = "https://github.com/tysen/leptos", branch = "leptos_0.9" }
-leptos_router = { git = "https://github.com/tysen/leptos", branch = "leptos_0.9" }
-reactive_stores = { git = "https://github.com/tysen/leptos", branch = "leptos_0.9" }
-reactive_graph = { git = "https://github.com/tysen/leptos", branch = "leptos_0.9" }
-leptos_transition_group = { git = "https://github.com/tysen/leptos-transition-group", branch = "leptos_0.9" }
+# Compile dependencies optimized while keeping own code fast to build.
+# https://benw.is/posts/how-i-improved-my-rust-compile-times-by-seventy-five-percent#optimization-level
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+# Size-optimized profile for WASM release bundles (referenced by the examples via cargo-leptos).
+[profile.wasm-release]
+inherits = "release"
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"
