@@ -127,7 +127,7 @@ where
     T: Send + Sync,
     S: Storage<T> + Storage<ArcField<T>> + Storage<Option<T>>,
     Subfield<Inner, Prev, T>: Clone,
-    Inner: StoreField<Value = Prev> + Send + Sync + 'static,
+    Inner: StoreField<Value = Prev> + Send + Sync + 'static + IsDisposed,
     Prev: 'static,
 {
     fn from(subfield: Subfield<Inner, Prev, T>) -> Self {
@@ -157,7 +157,7 @@ where
     T: Send + Sync,
     S: Storage<T> + Storage<ArcField<Option<T>>> + Storage<Option<T>>,
     Subfield<Inner, Prev, Option<T>>: Clone,
-    Inner: StoreField<Value = Prev> + Send + Sync + 'static,
+    Inner: StoreField<Value = Prev> + Send + Sync + 'static + IsDisposed,
     Prev: 'static,
 {
     fn from(subfield: Subfield<Inner, Prev, Option<T>>) -> Self {
