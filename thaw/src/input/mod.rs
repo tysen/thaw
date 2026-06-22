@@ -68,6 +68,8 @@ pub fn Input(
     #[prop(optional, into)]
     size: Signal<InputSize>,
     #[prop(optional, into)] autocomplete: MaybeProp<String>,
+    /// `inputmode` hint for on-screen keyboards (e.g. "numeric").
+    #[prop(optional, into)] input_mode: MaybeProp<String>,
 ) -> impl IntoView {
     mount_style("input", include_str!("./input.css"));
     let (id, name) = FieldInjection::use_id_and_name(id, name);
@@ -193,6 +195,7 @@ pub fn Input(
                 node_ref=input_ref
                 style=move || input_style.get()
                 autocomplete=autocomplete
+                inputmode=input_mode
             />
 
             {if let Some(suffix) = input_suffix.and_then(|suffix| suffix.if_.then_some(suffix)) {
