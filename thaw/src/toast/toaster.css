@@ -21,7 +21,7 @@ div.thaw-toaster-wrapper {
 
 .thaw-toaster--top {
     top: 16px;
-    left: calc(50% + 20px);
+    left: 50%;
     transform: translateX(-50%);
 }
 
@@ -37,7 +37,7 @@ div.thaw-toaster-wrapper {
 
 .thaw-toaster--bottom {
     bottom: 16px;
-    left: calc(50% + 20px);
+    left: 50%;
     transform: translateX(-50%);
 }
 
