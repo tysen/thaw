@@ -7,7 +7,7 @@ use leptos::{
         renderer::types,
         view::{
             any_view::{AnyViewState, AnyViewWithAttrs},
-            Position, PositionState,
+            Position, PositionState, RenderFlags,
         },
     },
 };
@@ -138,12 +138,11 @@ impl RenderHtml for SSRMountStyle {
         self,
         buf: &mut String,
         position: &mut Position,
-        escape: bool,
-        mark_branches: bool,
+        flags: RenderFlags,
         extra_attrs: Vec<AnyAttribute>,
     ) {
         self.children
-            .to_html_with_buf(buf, position, escape, mark_branches, extra_attrs);
+            .to_html_with_buf(buf, position, flags, extra_attrs);
 
         inject_styles_into_buf(buf, self.context);
     }
@@ -152,8 +151,7 @@ impl RenderHtml for SSRMountStyle {
         self,
         buf: &mut leptos::tachys::ssr::StreamBuilder,
         position: &mut Position,
-        escape: bool,
-        mark_branches: bool,
+        flags: RenderFlags,
         extra_attrs: Vec<AnyAttribute>,
     ) where
         Self: Sized,
@@ -161,8 +159,7 @@ impl RenderHtml for SSRMountStyle {
         self.children.to_html_async_with_buf::<OUT_OF_ORDER>(
             buf,
             position,
-            escape,
-            mark_branches,
+            flags,
             extra_attrs,
         );
 
