@@ -6,7 +6,7 @@ use leptos::{
         hydration::Cursor,
         renderer::types,
         view::{
-            any_view::{AnyViewState, AnyViewWithAttrs},
+            any_view::AnyViewState,
             Position, PositionState, RenderFlags,
         },
     },
@@ -106,7 +106,7 @@ impl Render for SSRMountStyle {
 }
 
 impl AddAnyAttr for SSRMountStyle {
-    type Output<SomeNewAttr: Attribute> = AnyViewWithAttrs;
+    type Output<SomeNewAttr: Attribute> = <AnyView as AddAnyAttr>::Output<SomeNewAttr>;
 
     fn add_any_attr<NewAttr: Attribute>(self, attr: NewAttr) -> Self::Output<NewAttr>
     where
