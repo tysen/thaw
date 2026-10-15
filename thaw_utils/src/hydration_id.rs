@@ -18,6 +18,6 @@ pub fn next_stable_id() -> String {
     use leptos::prelude::Owner;
     let id = Owner::current_shared_context()
         .map(|sc| sc.next_id().into_inner())
-        .unwrap_or(0);
+        .unwrap_or_else(|| "0".to_string());
     format!("thaw-{id}")
 }
